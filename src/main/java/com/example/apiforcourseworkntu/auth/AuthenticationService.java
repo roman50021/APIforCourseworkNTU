@@ -49,6 +49,7 @@ public class AuthenticationService {
                 .body(AuthenticationResponse.builder()
                         .token(jwtToken)
                         .build());
+
     }
 
     public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request) {
