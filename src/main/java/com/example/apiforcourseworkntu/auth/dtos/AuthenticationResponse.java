@@ -1,4 +1,4 @@
-package com.example.apiforcourseworkntu.auth;
+package com.example.apiforcourseworkntu.auth.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

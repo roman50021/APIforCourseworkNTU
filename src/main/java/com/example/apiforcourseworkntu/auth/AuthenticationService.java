@@ -1,12 +1,18 @@
 package com.example.apiforcourseworkntu.auth;
 
+import com.example.apiforcourseworkntu.auth.dtos.AuthenticationRequest;
+import com.example.apiforcourseworkntu.auth.dtos.AuthenticationResponse;
 import com.example.apiforcourseworkntu.config.JwtService;
 import com.example.apiforcourseworkntu.user.Role;
 import com.example.apiforcourseworkntu.user.User;
 import com.example.apiforcourseworkntu.user.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +27,14 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 
-    public AuthenticationResponse register(RegisterRequest request){
+    public ResponseEntity<AuthenticationResponse> register(RegisterRequest request){
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
-        if (existingUser.isPresent()){
-            return AuthenticationResponse.builder()
-                    .errorMessage("A user with this email already exists")
-                    .build();
+        if (existingUser.isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(AuthenticationResponse.builder()
+                            .errorMessage("A user with this email already exists")
+                            .build());
         }
-
 
         var user = User.builder()
                 .firstname(request.getFirstname())
@@ -39,27 +45,48 @@ public class AuthenticationService {
                 .build();
         repository.save(user);
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return ResponseEntity.ok()
+                .body(AuthenticationResponse.builder()
+                        .token(jwtToken)
+                        .build());
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-               new UsernamePasswordAuthenticationToken(
-                       request.getEmail(),
-                       request.getPassword()
-               )
-        );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+    public ResponseEntity<AuthenticationResponse> authenticate(AuthenticationRequest request) {
+        try {
+            System.out.println("Authentication attempt for: " + request.getEmail());
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+            var user = repository.findByEmail(request.getEmail())
+                    .orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
+            return ResponseEntity.ok(AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build());
+        } catch (AuthenticationException e) {
+            // Authentication error handling
+            System.out.println("Authentication failed for: " + request.getEmail());
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(AuthenticationResponse.builder()
+                            .errorMessage("Invalid email or password")
+                            .build());
+        }
     }
 
-//    public AuthenticationResponse logout(){
-//
-//    }
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
+            String jwtToken = authorizationHeader.substring(7);
+
+            // TODO:
+
+            return ResponseEntity.ok("Logout successful");
+        }
+
+        return ResponseEntity.badRequest().body("No valid Authorization header found");
+    }
 }

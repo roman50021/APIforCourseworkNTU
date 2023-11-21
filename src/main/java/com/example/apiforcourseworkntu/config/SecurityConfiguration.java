@@ -1,5 +1,6 @@
 package com.example.apiforcourseworkntu.config;
 
+import com.example.apiforcourseworkntu.user.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +27,9 @@ public class SecurityConfiguration {
                     .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers("/api/v1/auth/**")
                             .permitAll()
-                            .anyRequest().authenticated())
+//                            .requestMatchers("/api/v1/admin/**")
+//                            .hasRole(Role.ADMIN.name())
+                            .anyRequest().fullyAuthenticated())
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authenticationProvider(authenticationProvider)
