@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,6 +40,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
