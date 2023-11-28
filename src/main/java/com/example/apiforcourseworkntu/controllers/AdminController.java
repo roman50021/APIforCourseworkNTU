@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/users")
 @RequiredArgsConstructor
 public class AdminController {
-    private final AuthenticationService authenticationService;
     private final UserService userService;
 
     @GetMapping()
@@ -25,12 +24,11 @@ public class AdminController {
     public ResponseEntity<String> testAdminEndpoint() {
         return ResponseEntity.ok("Test successful");
     }
-
     @PostMapping("/create")
     public ResponseEntity<AuthenticationResponse> createUser(@RequestBody RegisterRequest request){
         return userService.createUser(request);
     }
-    @PostMapping("/infoByEmail")
+    @PostMapping("/get")
     public ResponseEntity<InfoResponse> infoByEmailUser(@RequestBody EmailRequest request){
         return userService.loadUserByEmail(request);
     }
@@ -41,9 +39,8 @@ public class AdminController {
 
     @PostMapping("update")
     public ResponseEntity<Message> updateUser(@RequestBody UpdateUser request){
-        return userService.updateUser(request);
+        return userService.update(request);
     }
-
     @PostMapping("/delete")
     public ResponseEntity<Message> deleteByEmailUser(@RequestBody EmailRequest request){
         return userService.deleteUserByEmail(request);

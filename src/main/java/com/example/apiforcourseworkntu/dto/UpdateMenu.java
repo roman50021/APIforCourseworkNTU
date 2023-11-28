@@ -1,20 +1,15 @@
-package com.example.apiforcourseworkntu.models;
+package com.example.apiforcourseworkntu.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "menu")
-public class Menu {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+@AllArgsConstructor
+@NoArgsConstructor
+public class UpdateMenu {
     private Integer id;
     private String name;
     private String description;

@@ -5,7 +5,7 @@ import com.example.apiforcourseworkntu.auth.dtos.AuthenticationResponse;
 import com.example.apiforcourseworkntu.config.JwtService;
 import com.example.apiforcourseworkntu.user.Role;
 import com.example.apiforcourseworkntu.user.User;
-import com.example.apiforcourseworkntu.user.UserRepository;
+import com.example.apiforcourseworkntu.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

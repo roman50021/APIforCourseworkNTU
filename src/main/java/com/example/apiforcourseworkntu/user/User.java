@@ -1,5 +1,6 @@
 package com.example.apiforcourseworkntu.user;
 
+import com.example.apiforcourseworkntu.models.Orders;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,6 +26,9 @@ public class User implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<Orders> orders;
 
     @Override
     protected Object clone() throws CloneNotSupportedException {

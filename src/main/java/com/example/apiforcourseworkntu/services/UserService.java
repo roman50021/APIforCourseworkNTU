@@ -8,7 +8,7 @@ import com.example.apiforcourseworkntu.dto.InfoResponse;
 import com.example.apiforcourseworkntu.dto.Message;
 import com.example.apiforcourseworkntu.dto.UpdateUser;
 import com.example.apiforcourseworkntu.user.User;
-import com.example.apiforcourseworkntu.user.UserRepository;
+import com.example.apiforcourseworkntu.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -66,7 +66,7 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<Message> updateUser(UpdateUser request) {
+    public ResponseEntity<Message> update(UpdateUser request) {
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             User userToUpdate = existingUser.get();

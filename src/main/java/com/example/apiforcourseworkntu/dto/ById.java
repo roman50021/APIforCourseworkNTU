@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
-    private String firstname;
-    private String lastname;
-    private String email;
+public class ById {
+    Integer id;
 }

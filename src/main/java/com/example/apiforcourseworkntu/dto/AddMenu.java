@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfo {
-    private String firstname;
-    private String lastname;
-    private String email;
+public class AddMenu {
+    private String name;
+    private String description;
+    private double servingWeight;
+    private double price;
 }

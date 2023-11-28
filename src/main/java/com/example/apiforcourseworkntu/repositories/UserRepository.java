@@ -1,9 +1,7 @@
-package com.example.apiforcourseworkntu.user;
+package com.example.apiforcourseworkntu.repositories;
 
-import org.springframework.data.domain.Example;
+import com.example.apiforcourseworkntu.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 
