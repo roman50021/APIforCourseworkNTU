@@ -1,7 +1,6 @@
 package com.example.apiforcourseworkntu.controllers;
 
-import com.example.apiforcourseworkntu.dto.CrateOrder;
-import com.example.apiforcourseworkntu.dto.Message;
+import com.example.apiforcourseworkntu.dto.*;
 import com.example.apiforcourseworkntu.services.OrderService;
 import com.example.apiforcourseworkntu.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +23,16 @@ public class UserBuyerController {
     @PostMapping ("/create")
     public ResponseEntity<Message> createOrder(@RequestBody CrateOrder request) {
         return orderService.create(request);
+    }
+
+    @PostMapping ("/cancel")
+    public ResponseEntity<Message> cancelOrder(@RequestBody CancelOrder request){
+        return orderService.cancel(request);
+    }
+
+    @GetMapping  ("/orders")
+    public ResponseEntity<OrdersMessage> getOrders(@RequestBody AllOrdersForUser request){
+        return orderService.getMyOrders(request);
     }
 
 
