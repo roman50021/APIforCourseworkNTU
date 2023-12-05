@@ -34,6 +34,10 @@ public class UserBuyerController {
     public ResponseEntity<OrdersMessage> getOrders(@RequestBody AllOrdersForUser request){
         return orderService.getMyOrders(request);
     }
+    @PostMapping("/change")
+    public ResponseEntity<Message> changeOrder(@RequestBody ChangeOrder request){
+        return orderService.changeMyOrder(request);
+    }
 
 
 

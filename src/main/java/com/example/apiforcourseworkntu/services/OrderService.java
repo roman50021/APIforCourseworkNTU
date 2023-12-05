@@ -134,12 +134,57 @@ public class OrderService {
         }
     }
 
-//    public ResponseEntity<Message> changeMyOrder( request){
-//
-//    }
+    public ResponseEntity<Message> changeMyOrder(ChangeOrder request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = getUserDetails(authentication);
 
+        if (userDetails != null) {
+            String userEmail = userDetails.getUsername();
+            if (!userEmail.equals(request.getEmail())) {
+                return ResponseEntity.badRequest().body(new Message("Mismatched user email"));
+            }
 
+            // Поиск заказа в базе данных по его ID
+            Optional<Order> optionalOrder = orderRepository.findById(request.getId());
 
+            if (optionalOrder.isPresent()) {
+                Order existingOrder = optionalOrder.get();
 
+                // Проверка, что заказ принадлежит текущему пользователю
+                if (!existingOrder.getUser().getEmail().equals(userEmail)) {
+                    return ResponseEntity.badRequest().body(new Message("Order does not belong to the authenticated user"));
+                }
 
+                // Проверка, что все menuIds существуют в базе данных
+                List<Menu> menuList = menuRepository.findAllByIdIn(request.getMenuIds());
+                if (menuList.size() != request.getMenuIds().size()) {
+                    return ResponseEntity.badRequest().body(new Message("Invalid menuId found"));
+                }
+
+                // Обновление полей заказа
+                existingOrder.setAddress(request.getAddress());
+                existingOrder.setMenuIds(request.getMenuIds());
+                existingOrder.setPaid(request.isPaid());
+
+                // Обновление цены заказа
+                double totalPrice = calculateTotalPrice(menuList);
+                existingOrder.setTotalPrice(totalPrice);
+
+                // Обновление связанных таблиц
+                List<String> menuNames = menuList.stream().map(Menu::getName).collect(Collectors.toList());
+                existingOrder.setMenuNames(menuNames);
+
+                // Дополнительные обновления, если необходимо
+
+                // Сохранение обновленного заказа
+                orderRepository.save(existingOrder);
+
+                return ResponseEntity.ok(new Message("Order updated successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(new Message("Order not found"));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(new Message("User not authenticated"));
+        }
+    }
 }
