@@ -7,6 +7,7 @@ import com.example.apiforcourseworkntu.dto.EmailRequest;
 import com.example.apiforcourseworkntu.dto.InfoResponse;
 import com.example.apiforcourseworkntu.dto.Message;
 import com.example.apiforcourseworkntu.dto.UpdateUser;
+import com.example.apiforcourseworkntu.repositories.OrderRepository;
 import com.example.apiforcourseworkntu.user.User;
 import com.example.apiforcourseworkntu.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class UserService {
     private final AuthenticationService service;
     private final UserRepository repository;
+    private final OrderRepository orderRepository;
 
     public ResponseEntity<AuthenticationResponse> createUser(RegisterRequest request) {
         return service.register(request);
@@ -54,6 +56,7 @@ public class UserService {
         Optional<User> existingUser = repository.findByEmail(request.getEmail());
         if (existingUser.isPresent()) {
             repository.deleteByEmail(existingUser.get().getEmail());
+            orderRepository.deleteByUserId(existingUser.get().getId());
             return ResponseEntity.ok()
                     .body(Message.builder()
                             .message("You have successfully deleted this user!")

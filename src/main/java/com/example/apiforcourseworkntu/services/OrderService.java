@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -182,6 +183,41 @@ public class OrderService {
                 return ResponseEntity.ok(new Message("Order updated successfully"));
             } else {
                 return ResponseEntity.badRequest().body(new Message("Order not found"));
+            }
+        } else {
+            return ResponseEntity.badRequest().body(new Message("User not authenticated"));
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<Message> deleteAccount(EmailRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = getUserDetails(authentication);
+
+        if (userDetails != null) {
+            String userEmail = userDetails.getUsername();
+            if (!userEmail.equals(request.getEmail())) {
+                return ResponseEntity.badRequest().body(new Message("Mismatched user email"));
+            }
+
+            Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+
+            if (optionalUser.isPresent()) {
+                User userToDelete = optionalUser.get();
+
+                if (!userEmail.equals(userToDelete.getEmail())) {
+                    return ResponseEntity.badRequest().body(new Message("User does not match authenticated user"));
+                }
+
+                // Delete associated orders
+                orderRepository.deleteByUserId(userToDelete.getId());
+
+                // Delete the user
+                userRepository.delete(userToDelete);
+
+                return ResponseEntity.ok(new Message("Account deleted successfully"));
+            } else {
+                return ResponseEntity.badRequest().body(new Message("User not found"));
             }
         } else {
             return ResponseEntity.badRequest().body(new Message("User not authenticated"));

@@ -6,6 +6,7 @@ import com.example.apiforcourseworkntu.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,6 +38,12 @@ public class UserBuyerController {
     @PostMapping("/change")
     public ResponseEntity<Message> changeOrder(@RequestBody ChangeOrder request){
         return orderService.changeMyOrder(request);
+    }
+
+    @DeleteMapping("/delete")
+    @Transactional
+    public ResponseEntity<Message> deleteAccount(@RequestBody EmailRequest request){
+        return orderService.deleteAccount(request);
     }
 
 
