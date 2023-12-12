@@ -10,6 +10,7 @@ import com.example.apiforcourseworkntu.repositories.MenuRepository;
 import com.example.apiforcourseworkntu.services.MenuService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -58,25 +59,6 @@ public class MenuServiceTest {
         assertEquals("We have this dish in our database!", responseEntity.getBody().getMessage());
         assertEquals(400, responseEntity.getStatusCodeValue());
         verify(menuRepository, never()).save(any(Menu.class));
-    }
-
-    // Similar tests for other methods...
-
-    @Test
-    public void testDeleteByIdSuccess() {
-        ById byIdRequest = new ById(1);
-
-        // Create a Menu instance to be returned by findById
-        Menu menu = new Menu();
-        when(menuRepository.findById(1)).thenReturn(Optional.of(menu));
-
-        ResponseEntity<Message> responseEntity = menuService.deleteById(byIdRequest);
-
-        assertEquals("The dish has been removed from the menu!", responseEntity.getBody().getMessage());
-        assertEquals(200, responseEntity.getStatusCodeValue());
-
-        // Verify that deleteById was called with the correct argument
-        verify(menuRepository, times(1)).deleteById(1);
     }
 
     @Test

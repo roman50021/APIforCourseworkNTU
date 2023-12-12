@@ -45,7 +45,4 @@ public class UserBuyerController {
     public ResponseEntity<Message> deleteAccount(@RequestBody EmailRequest request){
         return orderService.deleteAccount(request);
     }
-
-
-
 }
