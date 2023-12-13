@@ -593,7 +593,7 @@ JSON для перевірки:
 ```
 
 ### Отримання страв
-URL для перевірки (POST):
+URL для перевірки (GET):
    ```bash
 http://localhost:8080/api/v1/admin/menu/all
    ```
